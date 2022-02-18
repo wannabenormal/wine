@@ -1,5 +1,6 @@
 from http.server import HTTPServer, SimpleHTTPRequestHandler
 import datetime
+import collections
 
 import pandas
 from jinja2 import Environment, FileSystemLoader, select_autoescape
@@ -25,12 +26,20 @@ winery_foundation_date = datetime.datetime(year=1920, month=1, day=1)
 delta = today - winery_foundation_date
 winery_age = delta.days // 365
 
-excel_wines_df = pandas.read_excel('wine.xlsx')
+excel_wines_df = pandas.read_excel(
+    'wine2.xlsx',
+    na_values=None,
+    keep_default_na=False
+)
 wines = excel_wines_df.to_dict(orient='records')
+wines_categories = collections.defaultdict(list)
+
+for wine in wines:
+    wines_categories[wine['Категория']].append(wine)
 
 rendered_page = template.render(
     winery_age=f'{winery_age} {pluralize(winery_age, ["год", "года", "лет"])}',
-    wines=wines
+    wines_categories=wines_categories
 )
 
 with open('index.html', 'w', encoding='utf-8') as file:
