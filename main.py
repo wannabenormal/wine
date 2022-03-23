@@ -3,6 +3,7 @@ import collections
 from http.server import HTTPServer, SimpleHTTPRequestHandler
 
 import pandas
+import argparse
 from jinja2 import Environment, FileSystemLoader, select_autoescape
 
 WINERY_FOUNDATION_YEAR = 1920
@@ -17,6 +18,14 @@ def pluralize(number, words):
     return words[2]
 
 
+args_parser = argparse.ArgumentParser()
+args_parser.add_argument(
+    '--path',
+    help='Название xlsx файла',
+    default='wine.xlsx'
+)
+args = args_parser.parse_args()
+
 env = Environment(
     loader=FileSystemLoader('.'),
     autoescape=select_autoescape(['html', 'xml'])
@@ -27,7 +36,7 @@ current_year = datetime.datetime.today().year
 winery_age = current_year - WINERY_FOUNDATION_YEAR
 
 excel_wines_df = pandas.read_excel(
-    'wine3.xlsx',
+    args.path,
     na_values=None,
     keep_default_na=False
 )
