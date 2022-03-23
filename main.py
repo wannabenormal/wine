@@ -5,6 +5,8 @@ from http.server import HTTPServer, SimpleHTTPRequestHandler
 import pandas
 from jinja2 import Environment, FileSystemLoader, select_autoescape
 
+WINERY_FOUNDATION_YEAR = 1920
+
 
 def pluralize(number, words):
     if all((number % 10 == 1, number % 100 != 11)):
@@ -21,10 +23,8 @@ env = Environment(
 )
 template = env.get_template('template.html')
 
-today = datetime.datetime.today()
-winery_foundation_date = datetime.datetime(year=1920, month=1, day=1)
-delta = today - winery_foundation_date
-winery_age = delta.days // 365
+current_year = datetime.datetime.today().year
+winery_age = current_year - WINERY_FOUNDATION_YEAR
 
 excel_wines_df = pandas.read_excel(
     'wine3.xlsx',
