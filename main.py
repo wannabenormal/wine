@@ -18,41 +18,45 @@ def pluralize(number, words):
     return words[2]
 
 
-args_parser = argparse.ArgumentParser()
-args_parser.add_argument(
-    '--path',
-    help='Название xlsx файла',
-    default='wine.xlsx'
-)
-args = args_parser.parse_args()
+if __name__ == '__main__':
+    args_parser = argparse.ArgumentParser()
+    args_parser.add_argument(
+        '--path',
+        help='Название xlsx файла',
+        default='wine.xlsx'
+    )
+    args = args_parser.parse_args()
 
-env = Environment(
-    loader=FileSystemLoader('.'),
-    autoescape=select_autoescape(['html', 'xml'])
-)
-template = env.get_template('template.html')
+    env = Environment(
+        loader=FileSystemLoader('.'),
+        autoescape=select_autoescape(['html', 'xml'])
+    )
+    template = env.get_template('template.html')
 
-current_year = datetime.datetime.today().year
-winery_age = current_year - WINERY_FOUNDATION_YEAR
+    current_year = datetime.datetime.today().year
+    winery_age = current_year - WINERY_FOUNDATION_YEAR
 
-excel_wines_df = pandas.read_excel(
-    args.path,
-    na_values=None,
-    keep_default_na=False
-)
-wines = excel_wines_df.to_dict(orient='records')
-wines_by_categories = collections.defaultdict(list)
+    excel_wines_df = pandas.read_excel(
+        args.path,
+        na_values=None,
+        keep_default_na=False
+    )
+    wines = excel_wines_df.to_dict(orient='records')
+    wines_by_categories = collections.defaultdict(list)
 
-for wine in wines:
-    wines_by_categories[wine['Категория']].append(wine)
+    for wine in wines:
+        wines_by_categories[wine['Категория']].append(wine)
 
-rendered_page = template.render(
-    winery_age=f'{winery_age} {pluralize(winery_age, ["год", "года", "лет"])}',
-    wines_by_categories=wines_by_categories
-)
+    rendered_page = template.render(
+        winery_age=(
+            f'{winery_age} '
+            f'{pluralize(winery_age, ["год", "года", "лет"])}'
+        ),
+        wines_by_categories=wines_by_categories
+    )
 
-with open('index.html', 'w', encoding='utf-8') as file:
-    file.write(rendered_page)
+    with open('index.html', 'w', encoding='utf-8') as file:
+        file.write(rendered_page)
 
-server = HTTPServer(('0.0.0.0', 8000), SimpleHTTPRequestHandler)
-server.serve_forever()
+    server = HTTPServer(('0.0.0.0', 8000), SimpleHTTPRequestHandler)
+    server.serve_forever()
