@@ -41,14 +41,14 @@ excel_wines_df = pandas.read_excel(
     keep_default_na=False
 )
 wines = excel_wines_df.to_dict(orient='records')
-wines_categories = collections.defaultdict(list)
+wines_by_categories = collections.defaultdict(list)
 
 for wine in wines:
-    wines_categories[wine['Категория']].append(wine)
+    wines_by_categories[wine['Категория']].append(wine)
 
 rendered_page = template.render(
     winery_age=f'{winery_age} {pluralize(winery_age, ["год", "года", "лет"])}',
-    wines_categories=wines_categories
+    wines_by_categories=wines_by_categories
 )
 
 with open('index.html', 'w', encoding='utf-8') as file:
