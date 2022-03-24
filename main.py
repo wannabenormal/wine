@@ -9,7 +9,7 @@ from jinja2 import Environment, FileSystemLoader, select_autoescape
 WINERY_FOUNDATION_YEAR = 1920
 
 
-def get_plural_form(number, words):
+def get_words_plural_form(number, words):
     if all((number % 10 == 1, number % 100 != 11)):
         return words[0]
     elif all((2 <= number % 10 <= 4,
@@ -50,7 +50,7 @@ if __name__ == '__main__':
     rendered_page = template.render(
         winery_age=(
             f'{winery_age} '
-            f'{get_plural_form(winery_age, ["год", "года", "лет"])}'
+            f'{get_words_plural_form(winery_age, ["год", "года", "лет"])}'
         ),
         wines_by_categories=wines_by_categories
     )
