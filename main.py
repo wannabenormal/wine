@@ -1,9 +1,9 @@
-import datetime
+import argparse
 import collections
+import datetime
 from http.server import HTTPServer, SimpleHTTPRequestHandler
 
 import pandas
-import argparse
 from jinja2 import Environment, FileSystemLoader, select_autoescape
 
 WINERY_FOUNDATION_YEAR = 1920
